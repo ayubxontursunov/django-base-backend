@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: ${PROJECT_NAME}_db
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_PORT=${DB_PORT}
+    restart: always
+
+  web: &web
+    container_name: ${PROJECT_NAME}_backend
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #image: ${IMAGE}
+    command: ./entrypoint.sh
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./:/app
+      - ./static:/home/app/web/static
+      - ./media:/home/app/web/media
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Tashkent
+    ports:
+      - ${WEB_PORT}:${WEB_PORT}
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    container_name: ${PROJECT_NAME}_redis
+    image: redis:7.2.4-alpine
+    restart: always
+
+  celery:
+    <<: *web
+    container_name: ${PROJECT_NAME}_celery
+    command: celery -A core worker --loglevel=info
+    depends_on:
+      - db
+      - redis
+    ports: [ ]
+
+  celery-beat:
+    <<: *web
+    container_name: ${PROJECT_NAME}_celery_beat
+    command: celery -A core beat --loglevel=info
+    depends_on:
+      - db
+      - redis
+    ports: [ ]
+
+volumes:
+  postgres_data:
+  static_volume:
+
