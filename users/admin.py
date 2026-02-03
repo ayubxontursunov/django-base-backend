@@ -84,4 +84,29 @@ class CustomUserAdmin(UserAdmin):
     )
 
     # Read-only fields
-    readonly_fields = ['last_login', 'date_joined',]
+    readonly_fields = ['last_login', 'date_joined']
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super().get_fieldsets(request, obj)
+        # Add new fields to 'Personal info' section
+        for section in fieldsets:
+            if section[0] == _('Personal info'):
+                fields = list(section[1]['fields'])
+                if 'phone_number' not in fields:
+                    fields.append('phone_number')
+                if 'language' not in fields:
+                    fields.append('language')
+                if 'email_verified' not in fields:
+                    fields.append('email_verified')
+                section[1]['fields'] = tuple(fields)
+        return fieldsets
+
+
+from .models import OTPCode
+
+@admin.register(OTPCode)
+class OTPCodeAdmin(admin.ModelAdmin):
+    list_display = ('email', 'code', 'purpose', 'is_used', 'created_at', 'expires_at')
+    list_filter = ('purpose', 'is_used', 'created_at')
+    search_fields = ('email', 'code')
+    readonly_fields = ('created_at',)

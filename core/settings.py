@@ -106,8 +106,32 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [],
-    'DEFAULT_PERMISSION_CLASSES': [],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+}
+
+# CORS settings for frontend development
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5174",  # Vite default port
+    "http://localhost:5173",  # Vite default port
+    "http://localhost:3000",  # Alternative port
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
+
+# SimpleJWT settings
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 CELERY_BROKER_URL = env.str("CELERY_BROKER_URL", default="redis://localhost:6379/0")

@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     CheckEmailView, RegisterView, LoginView, ProfileView,
     VerifyOTPView, ResendOTPView, PasswordResetRequestView,
-    PasswordResetConfirmView
+    PasswordResetConfirmView, PasswordChangeView
 )
 
 app_name = 'users'
@@ -26,5 +26,7 @@ urlpatterns = [
     path('password-reset-confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     
     # Profile
+    # Profile
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('password-change/', PasswordChangeView.as_view(), name='password_change'),
 ]

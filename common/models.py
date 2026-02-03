@@ -17,6 +17,9 @@ class Region(BaseModel):
         verbose_name_plural = "Regions"
         verbose_name = "Region"
 
+    def __str__(self):
+        return self.name
+
 
 class District(BaseModel):
     name = models.CharField(max_length=255)
@@ -27,6 +30,9 @@ class District(BaseModel):
         verbose_name_plural = "Districts"
         verbose_name = "District"
 
+    def __str__(self):
+        return self.name
+
 
 class DocumentType(BaseModel):
     name = models.CharField(max_length=255)
@@ -35,4 +41,5 @@ class DocumentType(BaseModel):
         verbose_name_plural = "Document Types"
         verbose_name = "Document Type"
 
-
+    def __str__(self):
+        return self.name

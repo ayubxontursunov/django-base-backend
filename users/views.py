@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, get_user_model
 from .serializers import (
     UserSerializer, RegisterSerializer, CheckEmailSerializer,
     VerifyOTPSerializer, ResendOTPSerializer, PasswordResetRequestSerializer,
-    PasswordResetConfirmSerializer
+    PasswordResetConfirmSerializer, PasswordChangeSerializer
 )
 from .models import OTPCode
 from .utils import send_otp_email
@@ -145,20 +145,6 @@ class LoginView(generics.GenericAPIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
-        # Check if email is verified
-        if not user.email_verified:
-            # Resend OTP
-            otp = OTPCode.create_otp(user.email, 'registration')
-            send_otp_email(user.email, otp.code, 'registration')
-            
-            return Response(
-                {
-                    'detail': 'Email not verified. OTP sent to your email.',
-                    'email_verified': False,
-                    'email': user.email
-                },
-                status=status.HTTP_403_FORBIDDEN
-            )
 
         refresh = RefreshToken.for_user(user)
         user_serializer = UserSerializer(user)
@@ -225,3 +211,27 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class PasswordChangeView(generics.GenericAPIView):
+    """Change user password."""
+    permission_classes = [IsAuthenticated]
+    serializer_class = PasswordChangeSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = request.user
+        if not user.check_password(serializer.validated_data['old_password']):
+            return Response(
+                {'old_password': ['Wrong password.']},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+        
+        return Response({
+            'message': 'Password changed successfully.',
+        })
