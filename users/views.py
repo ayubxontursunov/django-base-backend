@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, get_user_model
 from .serializers import (
-    UserSerializer, RegisterSerializer, CheckEmailSerializer,
+    UserSerializer, RegisterSerializer, CheckEmailSerializer, LoginSerializer,
     VerifyOTPSerializer, ResendOTPSerializer, PasswordResetRequestSerializer,
     PasswordResetConfirmSerializer, PasswordChangeSerializer
 )
@@ -117,16 +117,14 @@ class ResendOTPView(generics.GenericAPIView):
 class LoginView(generics.GenericAPIView):
     """Login user with email and password."""
     permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
 
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        if not email or not password:
-            return Response(
-                {'detail': 'Please provide both email and password'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.validated_data['email']
+        password = serializer.validated_data['password']
 
         try:
             user = User.objects.get(email=email)
