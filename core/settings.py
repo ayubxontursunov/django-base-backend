@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'filesaver',
     'users',
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -155,3 +156,4 @@ CELERY_IMPORTS = (
 )
 
 AUTH_USER_MODEL = "users.User"
+IS_API_PROTECTED=False
