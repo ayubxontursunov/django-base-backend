@@ -62,7 +62,7 @@ class Task(BaseModel):
         verbose_name = "Task"
 
     def __str__(self):
-        return f"{self.id} - {self.creator.full_name} - {self.document_type.name} - {self.date}"
+        return f"{self.id} - {self.creator.full_name} - {self.document_type.name}"
 
 
 class File(BaseModel):
