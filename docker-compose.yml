@@ -45,23 +45,23 @@ services:
     image: redis:7.2.4-alpine
     restart: always
 
-  celery:
-    <<: *web
-    container_name: ${PROJECT_NAME}_celery
-    command: celery -A core worker --loglevel=info
-    depends_on:
-      - db
-      - redis
-    ports: [ ]
-
-  celery-beat:
-    <<: *web
-    container_name: ${PROJECT_NAME}_celery_beat
-    command: celery -A core beat --loglevel=info
-    depends_on:
-      - db
-      - redis
-    ports: [ ]
+#  celery:
+#    <<: *web
+#    container_name: ${PROJECT_NAME}_celery
+#    command: celery -A core worker --loglevel=info
+#    depends_on:
+#      - db
+#      - redis
+#    ports: [ ]
+#
+#  celery-beat:
+#    <<: *web
+#    container_name: ${PROJECT_NAME}_celery_beat
+#    command: celery -A core beat --loglevel=info
+#    depends_on:
+#      - db
+#      - redis
+#    ports: [ ]
 
 volumes:
   postgres_data:
