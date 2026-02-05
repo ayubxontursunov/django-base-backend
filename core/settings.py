@@ -151,7 +151,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://mt.ruzimurodov.uz",
+    "https://shk.imv.uz",
 ]
 
 CELERY_IMPORTS = (
