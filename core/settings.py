@@ -123,6 +123,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://127.0.0.1:3000",
     "http://192.168.124.50:3000",
+    "https://shk.imv.uz",
+    "http://shk.imv.uz",
 ]
 CORS_ALLOW_CREDENTIALS = True
 

@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from .schema import swagger_urlpatterns
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('api/admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
     path('api/filesaver/', include('filesaver.urls')),
 ]
