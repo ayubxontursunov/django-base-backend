@@ -27,7 +27,7 @@ services:
     security_opt:
       - seccomp:unconfined
     volumes:
-      - ./:/app
+      - ./:/home/app/web
       - ./static:/home/app/web/static
       - ./media:/home/app/web/media
     env_file:

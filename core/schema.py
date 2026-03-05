@@ -8,11 +8,11 @@ from .generator import BothHttpAndHttpsSchemaGenerator
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="File collector",
+        title="API",
         default_version="v1",
-        description="Minfin",
+        description="Django REST API base project",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="info@imv.uz"),
+        contact=openapi.Contact(email="dev@example.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=False,

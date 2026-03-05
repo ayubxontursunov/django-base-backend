@@ -11,7 +11,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 
 DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'common',
     'django_celery_beat',
     'django_celery_results',
-    'filesaver',
     'users',
     "drf_yasg",
 ]
@@ -99,7 +98,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
-STATICFILES_DIRS = (BASE_DIR / "staticfiles",)
+_staticfiles_dir = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [_staticfiles_dir] if _staticfiles_dir.exists() else []
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -116,16 +116,15 @@ REST_FRAMEWORK = {
 }
 
 # CORS settings for frontend development
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5174",  # Vite default port
-    "http://localhost:5173",  # Vite default port
-    "http://localhost:3000",  # Alternative port
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:3000",
-    "http://192.168.124.50:3000",
-    "https://shk.imv.uz",
-    "http://shk.imv.uz",
-]
+CORS_ALLOWED_ORIGINS = env.list(
+    "CORS_ALLOWED_ORIGINS",
+    default=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
+    ],
+)
 CORS_ALLOW_CREDENTIALS = True
 
 # SimpleJWT settings
@@ -146,17 +145,18 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://shk.imv.uz",
-]
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 CELERY_IMPORTS = (
 
 )
 
 AUTH_USER_MODEL = "users.User"
-IS_API_PROTECTED=False
+IS_API_PROTECTED = env.bool("IS_API_PROTECTED", default=False)
+
+# Optional email settings (used by users.utils.send_otp_email if enabled)
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="no-reply@example.com")
+EMAIL_BACKEND = env.str("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")

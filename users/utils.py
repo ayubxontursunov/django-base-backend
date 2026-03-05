@@ -8,8 +8,8 @@ def send_otp_email(email, code, purpose):
     This is a placeholder function. Implement actual email sending here.
     """
     subject_map = {
-        'registration': 'Verify Your Email - Indoc',
-        'password_reset': 'Reset Your Password - Indoc'
+        'registration': 'Verify your email',
+        'password_reset': 'Reset your password'
     }
     
     message_map = {
@@ -17,7 +17,7 @@ def send_otp_email(email, code, purpose):
         'password_reset': f'Your password reset code is: {code}\n\nThis code will expire in 10 minutes.'
     }
     
-    subject = subject_map.get(purpose, 'Your OTP Code - Indoc')
+    subject = subject_map.get(purpose, 'Your OTP code')
     message = message_map.get(purpose, f'Your verification code is: {code}')
     
     # send_mail(

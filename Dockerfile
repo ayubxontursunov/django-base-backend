@@ -2,7 +2,7 @@
 FROM python:3.11.5
 
 # set work directory
-WORKDIR /usr/src/app
+WORKDIR /home/app/web
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -10,31 +10,20 @@ ENV PYTHONUNBUFFERED 1
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 # install system dependencies
-RUN apt-get update && apt-get install -y gettext
-
-COPY ./requirements.txt requirements.txt
-
+RUN apt-get update && apt-get install -y gettext libreoffice netcat-traditional
 
 # install dependencies
-RUN pip install -r requirements.txt
+COPY ./requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # copy project
-COPY . .
+COPY . /home/app/web/
 
-# create directory for the app user
-RUN mkdir -p /home/app
+# create standard directories
+RUN mkdir -p /home/app/web/static /home/app/web/media /home/app/web/locale
 
-# create the appropriate directories
-ENV HOME=/home/app
-ENV APP_HOME=/home/app/web
-RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/static
-RUN mkdir $APP_HOME/media
-RUN mkdir $APP_HOME/locale
-WORKDIR $APP_HOME
+# Make entrypoint executable
+RUN chmod +x /home/app/web/entrypoint.sh
 
-# copy project
-COPY . $APP_HOME
-
-RUN ["chmod", "+x", "/home/app/web/entrypoint.sh"]
-
+# set entrypoint
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]
